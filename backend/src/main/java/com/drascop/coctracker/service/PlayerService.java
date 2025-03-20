@@ -39,16 +39,13 @@ public class PlayerService {
 
 
     public Player getPlayerById(String playerId) {
-        if (playerId.startsWith("#")) {
-            playerId = "%23" + playerId.substring(1); // Replace # with %23
-        } else {
-            playerId = "%23" + playerId; // Just prepend %23
-        }
+
+        playerId = "%23" + playerId; 
     
         String url = apiUrl + playerId;
     
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", "application/json");
+        //headers.set("Accept", "application/json");
         headers.set("Authorization", "Bearer " + apiKey);
     
         HttpEntity<String> entity = new HttpEntity<>(headers);
