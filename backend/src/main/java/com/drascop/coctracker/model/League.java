@@ -29,6 +29,18 @@ public class League {
 
 
     /**
+     * Copy constructor 
+     * 
+     * @param copy The league object being copied
+     */
+    public League(League copy) {
+        this.name = copy.name;
+        this.id = copy.id;
+        this.iconUrls = copy.iconUrls;
+    }
+
+
+    /**
      * Getters and Setters
      */
 

@@ -31,6 +31,19 @@ public class PlayerClan {
 
 
     /**
+     * Copy constructor 
+     * 
+     * @param copy The PlayerClan object being copied
+     */
+    public PlayerClan(PlayerClan copy) {
+        this.tag = copy.tag;
+        this.clanLevel = copy.clanLevel;
+        this.name = copy.name;
+        this.badgeUrls = copy.badgeUrls;
+    }
+
+
+    /**
      * Getters and Setters
      */
 
