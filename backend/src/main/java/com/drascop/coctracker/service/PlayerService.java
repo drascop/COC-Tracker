@@ -1,9 +1,7 @@
 package com.drascop.coctracker.service;
 
 import java.net.InetAddress;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,29 +39,28 @@ public class PlayerService {
 
 
     public Player getPlayerById(String playerId) {
-        
-        if (!playerId.startsWith("#")) {
-            playerId = "#" + playerId;  // Prepend # if missing
+        if (playerId.startsWith("#")) {
+            playerId = "%23" + playerId.substring(1); // Replace # with %23
+        } else {
+            playerId = "%23" + playerId; // Just prepend %23
         }
-
-        // Encode the player ID to replace # with %23
-        String encodedPlayerId = URLEncoder.encode(playerId, StandardCharsets.UTF_8);
-        String url = apiUrl + encodedPlayerId;
-
+    
+        String url = apiUrl + playerId;
+    
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         headers.set("Authorization", "Bearer " + apiKey);
-
+    
         HttpEntity<String> entity = new HttpEntity<>(headers);
-
+    
         ResponseEntity<String> response = restTemplate.exchange(
             url, HttpMethod.GET, entity, String.class);
-
+    
         try {
             return objectMapper.readValue(response.getBody(), Player.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to parse player data", e);
         }
-}
+    }
     
 }
