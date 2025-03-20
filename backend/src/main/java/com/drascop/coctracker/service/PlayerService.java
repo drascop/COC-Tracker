@@ -1,7 +1,9 @@
 package com.drascop.coctracker.service;
 
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.drascop.coctracker.model.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,28 +41,29 @@ public class PlayerService {
 
 
     public Player getPlayerById(String playerId) {
+        
         if (!playerId.startsWith("#")) {
             playerId = "#" + playerId;  // Prepend # if missing
         }
-        String url = apiUrl + playerId;
-        
-        // Ensure correct encoding
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-    
+
+        // Encode the player ID to replace # with %23
+        String encodedPlayerId = URLEncoder.encode(playerId, StandardCharsets.UTF_8);
+        String url = apiUrl + encodedPlayerId;
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         headers.set("Authorization", "Bearer " + apiKey);
-    
+
         HttpEntity<String> entity = new HttpEntity<>(headers);
-    
+
         ResponseEntity<String> response = restTemplate.exchange(
-            builder.toUriString(), HttpMethod.GET, entity, String.class);
-    
+            url, HttpMethod.GET, entity, String.class);
+
         try {
             return objectMapper.readValue(response.getBody(), Player.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to parse player data", e);
         }
-    }
+}
     
 }
