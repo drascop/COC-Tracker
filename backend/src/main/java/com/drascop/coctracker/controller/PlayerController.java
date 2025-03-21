@@ -9,7 +9,7 @@ import com.drascop.coctracker.model.Player;
 import com.drascop.coctracker.service.PlayerService;
 
 @RestController
-@RequestMapping("/api/player")
+@RequestMapping("/player")
 public class PlayerController {
     private final PlayerService playerService;
 
