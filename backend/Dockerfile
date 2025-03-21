@@ -2,10 +2,12 @@
 FROM maven:3.8.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the source code into the container
-COPY . .
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Build the JAR file
+# Copy the source code and build the JAR file
+COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Use a smaller JDK image for running the app
