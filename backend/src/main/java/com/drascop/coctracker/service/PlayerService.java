@@ -1,7 +1,7 @@
 package com.drascop.coctracker.service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 
 import org.springframework.http.HttpEntity;
@@ -41,15 +41,18 @@ public class PlayerService {
     
         HttpEntity<String> entity = new HttpEntity<>(headers);
         
-        String encodedPlayerId = URLEncoder.encode("#" + playerId, StandardCharsets.UTF_8);
-        String url = apiBaseURL + encodedPlayerId;
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-    
         try {
-            return objectMapper.readValue(response.getBody(), Player.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to parse player data", e);
+            URI uri = new URI(apiBaseURL + "%23" + playerId);
+            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+            try {
+                return objectMapper.readValue(response.getBody(), Player.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to parse player data", e);
+            }
+        } catch (URISyntaxException ex ) {
+
         }
+        return null;
     }
     
 }
