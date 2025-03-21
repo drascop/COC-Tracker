@@ -1,12 +1,16 @@
 package com.drascop.coctracker.service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.drascop.coctracker.model.Player;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,17 +34,15 @@ public class PlayerService {
 
 
     public Player getPlayerById(String playerId) {
-
-        String url = UriComponentsBuilder.fromHttpUrl(apiBaseURL)
-                .pathSegment("%23" + playerId) 
-                .toUriString();
-
     
         HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", "Bearer " + apiKey);
     
         HttpEntity<String> entity = new HttpEntity<>(headers);
-    
+        
+        String encodedPlayerId = URLEncoder.encode("#" + playerId, StandardCharsets.UTF_8);
+        String url = apiBaseURL + encodedPlayerId;
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     
         try {
